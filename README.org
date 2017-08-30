@@ -1,0 +1,82 @@
+# -*- org-confirm-babel-evaluate: nil -*-
+
+* README
+
+- Version :: 0.1.0
+
+Prometheus exporter for automotive sensor metrics exposed by [[https://en.wikipedia.org/wiki/On-board_diagnostics][OBD-II]] using ELM327
+based USB-devices.
+
+Using this exporter you can collect metrics from your car, metrics such as:
+
+- Engine RPM
+- Coolant temperature
+- Intake manifold pressure
+- Engine load
+- Etc.
+
+Uses my Go library [[https://github.com/rzetterberg/elmobd][elmobd]] to handle the heavy lifting.
+
+** Usage
+
+To simplify testing how ~obd_exporter~ works there is a ~docker-compose.yaml~
+file in this project that when used sets up [[https://prometheus.io/][Prometheus]] to store the metrics
+that ~obd_exporter~ exposes and [[https://grafana.com/][Grafana]] to visualize the metrics from Prometheus.
+
+All Dockerfiles are based on official images, you can verify this by looking in
+the [[file:containers/][containers]] directory.
+
+Before starting the Docker containers, you need to plugin your ELM327 device
+into your car and your computer, then turn on the cars ignition. After that
+you need to get the path of your ELM327 device.
+
+You can plugin the device and check dmesg, this is what I get on my computer:
+
+#+BEGIN_EXAMPLE
+$ dmesg | tail
+[359720.858480] usb 6-2: Manufacturer: FTDI
+[359720.858482] usb 6-2: SerialNumber: A503GJEX
+[359720.897717] usbcore: registered new interface driver usbserial
+[359720.897733] usbcore: registered new interface driver usbserial_generic
+[359720.897748] usbserial: USB Serial support registered for generic
+[359720.901755] usbcore: registered new interface driver ftdi_sio
+[359720.901767] usbserial: USB Serial support registered for FTDI USB Serial Device
+[359720.901839] ftdi_sio 6-2:1.0: FTDI USB Serial Device converter detected
+[359720.901913] usb 6-2: Detected FT232RL
+[359720.904481] usb 6-2: FTDI USB Serial Device converter now attached to ttyUSB0
+#+END_EXAMPLE
+
+After that, if your device has another path other than ~/dev/ttyUSB0~ you need
+to change the ~devices~ value of the ~obd_exporter~ in the
+~docker-compose.yaml~ file.
+
+After that you can just start the Docker containers:
+
+#+BEGIN_SRC sh
+docker-compose up
+#+END_SRC
+
+Then open ~http://127.0.0.1:3000~ in your web browser and log into Grafana
+with:
+
+- User :: admin
+- Password :: dev
+
+There will be a predefined dashboard called "Basic metrics".
+
+** Supported sensors
+
+|-----+--------------------------|
+| PID | Name                     |
+|-----+--------------------------|
+|   4 | Engine load              |
+|   5 | Coolant temperature      |
+|  10 | Fuel pressure            |
+|  11 | Intake manifold pressure |
+|  12 | Engine RPM               |
+|  13 | Vehicle speed            |
+|  14 | Timing advance           |
+|  15 | Intake air temperature   |
+|  16 | MAF air flow rate        |
+|  17 | Throttle position        |
+|-----+--------------------------|
