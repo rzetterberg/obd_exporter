@@ -2,7 +2,7 @@
 
 * README
 
-- Version :: 0.1.0
+- Version :: 0.2.0
 
 Prometheus exporter for automotive sensor metrics exposed by [[https://en.wikipedia.org/wiki/On-board_diagnostics][OBD-II]] using ELM327
 based USB-devices.

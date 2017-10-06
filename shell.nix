@@ -3,6 +3,11 @@
 let
   pkgs = import <nixpkgs> { inherit system; };
 in
-  pkgs.callPackage ./default.nix {
-    inherit (pkgs);
+  with pkgs; stdenv.mkDerivation rec {
+    name    = "obd_exporter-${version}";
+    version = "0.2.0";
+
+    buildInputs = [
+      go
+    ];
   }
