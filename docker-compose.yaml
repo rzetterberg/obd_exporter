@@ -1,12 +1,12 @@
 version: '3'
 
 services:
-  #obd_exporter:
-  #  build:
-  #    context: .
-  #    dockerfile: containers/obd_exporter/Dockerfile
-  #  devices:
-  #    - "/dev/ttyUSB0:/dev/ttyUSB0"
+  obd_exporter:
+    build:
+      context: .
+      dockerfile: containers/obd_exporter/Dockerfile
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
   prometheus:
     build: containers/prometheus
   grafana:

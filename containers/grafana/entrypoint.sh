@@ -21,4 +21,4 @@ done
 
 kill $PID
 
-/run.sh "$ARGS"
+exec /bin/sh /run.sh "$ARGS"
